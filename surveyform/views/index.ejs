@@ -1,0 +1,65 @@
+<html>
+<head>
+<title></title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type ="text/javascript">
+        $(document).ready(function (){
+            // this triggers the connection event in our server!
+            var socket = io.connect();
+            // we'll write all the socket stuff after the above line!
+            $('#surveyform').submit(function (){
+              socket.emit("surveysubmitted",
+              {
+                name : $('#name').val(),
+                location : $('#location').val(),
+                language : $('#language').val(),
+                comment : $('#message').val()
+              });
+              return false;
+            });
+
+              socket.on('server_message', function (data){
+
+                  $("#message").html("This is the emitted information" + JSON.stringify(data.response))
+                });
+
+              socket.on('server_response', function (data){
+
+                  $("#num").html("This is your lucky number: " + JSON.stringify(data.response))
+                });
+
+        })
+    </script>
+</head>
+<body>
+  <span id='message'></span>
+  <span id='num'></span>
+<form id='surveyform'>
+    Name: <input type='text' id='name'>
+    <br>
+    <br>
+    Dojo Location: <select id="location">
+                <option value="SanJose">San Jose</option>
+                <option value="DC">DC</option>
+                <option value="SanFransisco">San Fransisco</option>
+                <option value="Seattle">Seattle</option>
+              </select>
+    <br>
+    <br>
+    Favorite Language: <select id="language">
+                <option value="Python">Python</option>
+                <option value="CSS">CSS</option>
+                <option value="HTML">HTML</option>
+                <option value="Ruby">Ruby</option>
+                <option value="Javascript">Javascript</option>
+              </select>
+    <br>
+    <br>
+    Comments: <textarea id="message" rows="10" cols="30"></textarea>
+    <br>
+    <br>
+    <input class="submit" type="submit">
+</form>
+</body>
+</html>
